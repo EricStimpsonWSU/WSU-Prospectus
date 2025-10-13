@@ -1,33 +1,56 @@
-\section{A Section}
+\section{Introduction}
 \label{chap:Introduction}
 
-I <3 my Wayne State Libraries! Do you? \cite{WSULibrary}
+\subsection{Computational Models for Atomic Condensed Matter Physics}
 
-\subsection{A Subsection with a Table}
-
-\begin{table}[!h]
-    \centering	
-    \bgroup
-    \def\arraystretch{1.00}
-    \begin{tabular}{| c | c | c | c |}
-          \hline			
-          Resource & Website & What's it for? \\ \hline \hline \cline{1-3}
-          Academic Success Center & https://success.wayne.edu/ & Academic Success!\\ \hline
-          Campus Health Center & http://health.wayne.edu/ & Health! \\ \hline
-          WRT Zone & http://www.clas.wayne.edu/writing/ & Writing Help!\\ \hline
-    \end{tabular}
-    \egroup
-    \caption{Wayne State University Resources}
-    \label{tab:WSUresources}
-\end{table}
-
-\subsection{A Subsection with a Figure}
+\begin{itemize}
+    \item Molecular dynamics description
+    \item Density field theories
+    \item Classical density field theory
+    \item Phase field crystal
+\end{itemize}
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.25\linewidth]{fig/wsu_primary_stacked_color.pdf}
-    \caption{WSU Logo} The Wayne State University Logo
+    \includegraphics[width=0.75\linewidth]{fig/fig-md-field-theory.pdf}
+    \caption{Molecular Dynamics (MD) vs Field Theory Description} MD simulations, as illustrated on the left, treat atoms as point particles in a $6N$ vector space with position and momentum vectors $(\{\mathbf{q}_i\},\{\mathbf{p}_i\})$, $i = 1, 2, \ldots, N$.  The trajectories of atoms in an MD simulation are calculated by time-stepping Newtonian equations of motion [i.e. $\mathbf{q}_i(t + \Delta t) = \mathbf{q}_i(t) + \mathbf{p}_i/m \cdot \Delta t$ and $\mathbf{p}_i(t + \Delta t) = \mathbf{p}_i(t) - \nabla U \cdot \Delta t$], with typical microscopic timescales on the order of $\tau_{\mu} = 10^{-12}$ s, making it impractical for observing diffusion.  Field theories, as illustrated on the right, integrate out the microscopic motion of the atoms to arrive at a number density field $\rho$, discretized over a regular lattice.  The change in the density field is given by $\rho(t + \Delta t) = \rho(t) + D \nabla^2 [\delta F / \delta \rho(t)] \cdot \Delta t$, where $D$ is a diffusion coefficient.
     \label{fig:WSUlogo}
 \end{figure}
 
-\subsection{A last Subsection}
+\clearpage
+
+\subsection{Phase Field Crystal Model Variants}
+
+\begin{itemize}
+    \item Standard PFC Model
+    \item Multi-mode PFC
+    \item Coupled fields (binaries, substrate)
+    \item Amplitude expansion
+    \item Structure PFC (XPFC)
+\end{itemize}
+
+\subsection{Successes of PFC}
+
+\begin{itemize}
+    \item Interface energy
+    \item Topological defect energy
+    \item Epitaxial crystal growth
+    \item Structure PFC (XPFC)
+    \item Vacancy diffusion?
+\end{itemize}
+
+%\begin{table}[!h]
+%    \centering	
+%    \bgroup
+%    \def\arraystretch{1.00}
+%    \begin{tabular}{| c | c | c | c |}
+%          \hline			
+%          Resource & Website & What's it for? \\ \hline \hline \cline{1-3}
+%          Academic Success Center & https://success.wayne.edu/ & Academic Success!\\ \hline
+%          Campus Health Center & http://health.wayne.edu/ & Health! \\ \hline
+%          WRT Zone & http://www.clas.wayne.edu/writing/ & Writing Help!\\ \hline
+%    \end{tabular}
+%    \egroup
+%    \caption{Wayne State University Resources}
+%    \label{tab:WSUresources}
+%\end{table}

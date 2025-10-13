@@ -1,0 +1,72 @@
+\documentclass[tikz]{standalone}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage[dvipsnames]{xcolor}
+\pgfplotsset{compat=1.18} % or your preferred version
+
+% Macro to draw a rectangle with specified coordinates, stroke color, and fill color
+\newcommand{\drawRectangle}[5]{%
+    \draw[fill=#5, draw=#4] #1 rectangle #2; % Use #4 for stroke and #5 for fill
+}
+
+% Fixed \drawRod macro
+\newcommand{\drawRod}[5]{%
+    \drawRectangle{#1}{#2}{#3}{#4}{#5}; % Use the \drawRectangle macro
+    \foreach \x/\label in {0.9/$\vec{x}_1$, 1.9/$\vec{x}_2$, 2.9/$\vec{x}_3$, 3.9/$\vec{x}_4$, 4.9/$\vec{x}_5$} {%
+        \draw[blue, fill=blue!20] (\x,#3) circle(0.1) node[anchor=south] {\scriptsize \label}; % Correct font size
+    }
+}
+
+% Macro to draw a hashed wall
+\newcommand{\drawHashWall}[5]{%
+    \begin{scope}
+        \clip (#1,#2) rectangle (#3,#4); % Define clipping
+        \draw[fill=black,draw=black] (#3+#5,#2) rectangle (#3,#4);          % Draw the wall line
+        \pgfmathparse{#1+0.1}\let\secondvalue\pgfmathresult
+        \pgfmathparse{#2-#4}\let\height\pgfmathresult
+        \pgfmathparse{#3+\height}\let\thirdvalue\pgfmathresult
+        \foreach \x in {#1,\secondvalue,...,\thirdvalue} {%
+            \draw (\x,#2) -- +(-\height,-\height); % Draw diagonal hash marks
+        }
+    \end{scope}
+}
+
+\begin{document}
+\begin{tikzpicture}
+    % Top rod
+    \drawRod{(0,1.9)}{(5,2.1)}{2.0}{black}{gray!50};
+    \node[anchor=west] at (0.8, 1.25) {\small (a) Long thin rod, anchored on the left.};
+
+    % Bottom rod
+    \drawRod{(0,-0.1)}{(5,0.1)}{0.0}{black!20}{gray!20};
+
+    % Bent rod
+    \path[fill=gray!50, draw=black] 
+        (0,-0.1) to[out=0, in=150] (4.7,-1.1) --
+        (4.8,-0.9) to[out=150, in=0] (0,0.1) -- cycle;
+
+    % Displacement vectors
+    \foreach \x/\xend/\yend in {4.9/4.66/-0.95, 3.9/3.77/-0.52, 2.9/2.84/-0.22, 1.9/1.88/-0.07, 0.9/0.898/-0.01} {
+        \draw[blue, dashed, dash pattern=on 1pt off 1pt, fill=blue!20] (\x,0) circle(0.1);
+        \draw[blue, fill=blue!20] (\xend,\yend) circle(0.1);
+        \draw[->, blue] (\x,0) -- (\xend,\yend);
+    }
+    \node[anchor=west] at (0.8, -1.25) {\small (b) Bent rod.};
+
+    % Top wall
+    \drawHashWall{-0.5}{2.4}{-0.01}{1.6}{-0.05}
+
+    % Bottom wall
+    \drawHashWall{-0.5}{0.4}{-0.01}{-0.4}{-0.05};
+
+    % Add legend
+    \node[anchor=west] at (5.5, 0) {
+        \begin{tikzpicture}
+            \draw[->, blue] (0,0) -- (0.5,0);
+            \node[anchor=west] at (0.5,0) {$\vec{u}(\vec{x})$};
+        \end{tikzpicture}
+    };
+\end{tikzpicture}
+\end{document}
