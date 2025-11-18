@@ -1,6 +1,6 @@
 % Select document class: 12 point, article
 \documentclass[12pt]{article}
-
+\usepackage{lmodern}
 % This template is based on work done by Mike Catanzaro and Gabe Angelini-Knoll, both formerly of the WSU math department, with updates in 2019 by Aaron Willcock (ez9213@wayne.edu) for the updated WSU dissertation and thesis formatting guidelines. It is currently maintained by Clayton Hayes (clayton.hayes@wayne.edu) of the WSU Libraries, who created the original template and has made some slight adjustments to facilitate code readability.
 
 % AMS = American Mathematical Society; math, symbols, theorems, fonts
@@ -50,10 +50,19 @@
 % Set space between lines. [option] = Double/single spacing necessary for properly formatting ToC/LoFT and titles.
 \usepackage[doublespacing]{setspace}
 
+% Figures and special math symbols
+\usepackage{subcaption} % Include in your preamble
+\usepackage{tikz}
+\usepackage{tikzsymbols}
+\usetikzlibrary{positioning,arrows.meta,decorations.pathmorphing,calc}
+
+% Math nice matrices
+\usepackage{nicematrix}
+
 % Create normal/logarithmic plots in two and three dimensions
 \usepackage{pgfplots}
 % Request a specific version
-\pgfplotsset{compat=1.5}
+\pgfplotsset{compat=1.17}
 
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 
@@ -179,6 +188,29 @@
 \renewcommand{\cftfigindent}{1.0em}
 \renewcommand{\cftfignumwidth}{5.5em}
 
+% Common math definitions
+\input{definitions}
+
+% Equation numbering in appendices
+\newcommand{\setappendixlabel}[1]{%
+  \renewcommand{\thesection}{#1}%
+  \renewcommand{\theequation}{#1.\arabic{equation}}%
+  \setcounter{equation}{0}%
+}
+
+% Appendix labeling and referencing
+\newcommand{\appendixsection}[2]{%
+  \renewcommand{\thesection}{#1}%        % make \thesection produce A, B, ...
+  \refstepcounter{section}%              % step the section counter for \label
+  \renewcommand{\theequation}{#1.\arabic{equation}}% 
+  \setcounter{equation}{0}%
+  \section*{APPENDIX #1}%
+  \addcontentsline{toc}{section}{Appendix #1: #2}%
+  \label{appendix:#1}%
+}
+
+\setlength{\headheight}{14.5pt}
+
 % Start document
 \begin{document}
 
@@ -244,28 +276,40 @@
 \input{chapter2}
 \clearpage
 
-% ...
-
-% Compile Chapter N
-\input{chapterN}
+% Compile Chapter 3
+\input{chapter3}
 \clearpage
+
+% Compile Chapter x
+%\input{chapterx}
+%\clearpage
 
 % Compile Appendix A
 \phantomsection
-\input{appendixA}
+\input{appendixA-DFT-FreeEnergy}
 \clearpage
 
 % Compile Appendix B
 \phantomsection
-\input{appendixB}
+\input{appendixB-DDFT-EOM}
+\clearpage
+
+% Compile Appendix C
+\phantomsection
+\input{appendixC-PFC-Rescaling}
+\clearpage
+
+% Compile Appendix D
+\phantomsection
+\input{appendixD-Odd-Elasticity}
 \clearpage
 
 % ...
 
 % Compile Appendix Z
-\phantomsection
-\input{appendixZ}
-\clearpage
+%\phantomsection
+%\input{appendixZ}
+%\clearpage
 
 % Compile bibliography
 \phantomsection
@@ -273,12 +317,12 @@
 \clearpage
 
 % Compile abstract
-\phantomsection
-\input{abstract}
-\clearpage
+%\phantomsection
+%\input{abstract}
+%\clearpage
 
 % Compile autobiographical statement
-\phantomsection
-\input{autobiographicalStatement}
+%\phantomsection
+%\input{autobiographicalStatement}
 
 \end{document}

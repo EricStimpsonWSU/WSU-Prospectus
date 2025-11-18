@@ -1,0 +1,204 @@
+\section{Research Outlook}
+\label{chap:ourModel}
+
+\subsection{Grain Boundary and Portevin-Le Chatelier Effects}
+As previously shown in Fig.~\ref{fig:grain-boundary-comparison}, log PFC may offer additional insights into the static structure of grain boundaries, and the influence of these static structures on dynamics such as plasticity \cite{chan2010plasticity-49d, hirvonen2016multiscale, stefanovic2009phase-c11}, sound waves \cite{abbadi2002characteristics-943, zhao2023understanding, burns2022timescale-edb}, or fracture \cite{hakim2009laws-c88}.  The presence of vacancy-like voids along grain boundaries may impact energy and stability predictions and influence the ways in which these boundaries are affected by thermal or deformation annealing.  In \cite{mellenthin2008phasefield-7d2}, for example the standard PFC model was shown to give reliable agreement with predictions for premelting that occurs along grain boundaries at temperatures close to $T_C$ for high-angle boundaries.  Low-angle boundaries, however, disagreed with the sharp-interface-theory that predicts these interfaces to remain nearly intact near $T_C$.  Closer inspection of Fig.~\ref{fig:grain-boundary-comparison} reveals that in areas where the grain boundary angle is lowest, the blurring of atoms appears greatest.  As already noted, this blurring is barely, if at all, present in the log PFC model, perhaps suggesting that the log PFC model of grain boundaries is more physical at low-angle interfaces.  A related concept to grain boundaries is epitaxial growth along a grain wall, sometimes with an underlying substrate \cite{meca2013epitaxial}.  The defects that often accompany crystallite growth \cite{laird1992crystal, elder2002modeling, elder2007phase-field, li2018phase} are of particular importance to a number of material science inquiries, including the fabrication of high-quality, single-domain films \cite{backofen2014capturing} and the duty cycle of rechargeable batteries \cite{tang2012orientation-aec}.  Both models (standard PFC and log PFC) are well-suited to gathering statistics from systems with large numbers of atoms on diffusive time scales, enabling the study of scaling laws and long-term growth rates \cite{backofen2014capturing}, as well as the potential for glassy states to solidify \cite{archer2012, backofen2014phase, kapfer2015two}.
+
+The Portevin-Le Chatelier (PLC) effect describes the uneven, "jerkey" nature exhibited by some materials as they undergo plastic deformations.  The source of the effect has been attributed to pinning effects at defect cores within the body of the material, and the subsequent breaking free of this pinning \cite{abbadi2002characteristics-943}.  In a stress versus strain plot, the PLC effect exhibits a sawtooth structure as depicted in Fig.~\ref{fig:sawtooth}.  In their paper \cite{chan2010plasticity-49d}, Chan and Goldenfeld et al. investigated the breaking free of accumulated strain was measured in crystals with varying defect landscapes, a process they referred to as an avalanche event.  From their measurements, they extracted a critical exponent for the probability of such a collapse in the stress as a function of the shear rate and found agreement with experiment and mean field theory predictions.  These results should be repeated with log PFC models, both as a verification of the model's validity vis-à-vis defect energy and in search of further refinement.
+
+A similar trend appears to occur during vacancy diffusion, as shown in Fig.~\ref{fig:diffusion-sawtooth}, where lines were added by hand to highlight the resemblance of the mean squared distance of vacancy diffusion to a sawtooth wave.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.85\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/Serration_types.jpg}
+    \end{subfigure}
+    \caption{Wikicommons (https://commons.wikimedia.org/wiki/File/Serration\_types.jpg) depiction of various stress-strain sawtooth bands showing a common classification schema.}
+    \label{fig:sawtooth}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.85\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-eta-sawtooth.png}
+    \end{subfigure}
+    \caption{Vacancy diffusion suggestive of a jerkey pinning and pin-breaking.}
+    \label{fig:diffusion-sawtooth}
+\end{figure}
+
+The sawtooth nature of vacancy diffusion is not unexpected when overcoming a potential barrier with thermal noise.  In particular, the potential barrier to diffusion of a vacancy over a single lattice spacing is expected to be roughly symmetric about the peak.  However, it is noteworthy that each line represents the average of ten independent ensembles, so the fact that the trend seems to persist over multiple diffusion events points to a future line of inquiry.
+
+%Beyond vacancy diffusion, the atomic integrity exhibited by log PFC suggests that it may be a useful model to study other PLC effects, especially plastic deformations and dynamic strain aging.  While PFC research in this area is not new (see \cite{zhou2019mechanical, chan2010plasticity-49d, stefanovic2009phase-c11}), log PFC holds the potential to improve the degree to which simulations match microscopic details within physical systems.  In \cite{abbadi2002characteristics-943}, the impact of temperature and grain-quality on the strain-stress relationship were measured. .
+
+\subsection{Phase Coexistence}
+As shown in Fig.~\ref{fig:sl-coexistence-comparison} and \ref{fig:sl-coexistence-comparisona}, standard PFC and log PFC offer differing viewpoints of the interface between a solid and liquid region.  In \cite{cahn1958free}, Cahn and Hilliard found that the free energy $\sigma$ is proportional to $(T_C - T)^{1/2}$ and predicted the temperature dependence of the interfacial thickness.  Investigations of these interfaces in PFC models are not new (for example \cite{elder2001sharp, channe2024phase}), but competing predictions of the angular dependence of surface tension in binaries such as hBN and SiC remain unresolved (current research including the author, Zhi-Feng Huang, Ken Elder, and Brendan Aaron).  The potential importance of vacancies on the successful modeling of solid-liquid boundaries was noted by \cite{asadi2015review}, where the method of achieving stable vacancies by Chang and Goldenfeld \cite{chan2009vacancy} was noted, though no new results were reported.  Additional modeling techniques can be found in \cite{laird1992crystal}, where MD and Monte Carlo methods are discussed, with the potential for log PFC to provide similar results with greater computational efficiency.
+
+\subsection{Competing Concepts of Temperature}
+The PFC free energy functional introduced in Eq.~\ref{eqn-PFC-potential} was given as
+%
+\begin{align}
+    \mathcal{F}[\phi(\pos)] = \int \dpos \left[ \frac{1}{2} \beta \phi \left( \nabla^2 + q_0^2 \right) \phi + \frac{1}{2} \epsilon \phi^2 + \frac{g}{3} \phi^3 + \frac{1}{4}\phi^4 \right].
+\end{align}
+%
+In this free energy, the model parameter carries the role of the over-cooling temperature $r$ in a Landau $\phi^4$ model.  Experimentation reveals the general rule that decreasing $\epsilon$, i.e. lowering the temperature of the crystal, produces atoms with less diffuse distributions.  In other words, in the limit $\epsilon \rightarrow -\infty$, the density distribution of an atom at $\pos'$, $\phi(\pos - \pos')])$, tends toward a delta function $\delta(\pos - \pos')$, while the spacing between atoms is generally not affected.  Meanwhile, the introduction of thermal noise via $\eta$
+%
+\begin{align}
+    \langle \eta(\pos, t)\eta(\pos', t') \rangle = -\eta_0 \nabla^2\delta(\pos - \pos')\delta(t-t').
+\end{align}
+%
+and
+%
+\begin{align}
+    \frac{d \phi}{dt} = \vec{\nabla} \cdot \left[ \vec\nabla \mu (\phi)  \right] \approx \nabla^2 \frac{\delta F}{\delta \phi} + \eta.
+\end{align}
+%
+introduces a different sense of temperature via the parameter $\eta_0$, which controls the strength of the thermal noise, with larger $\eta_0$ resulting in larger fluctuations in the position of atoms, or increased motility.  While searching for a suitable parameter space for vacancy diffusion, it was determined that decreasing $\epsilon$ (i.e. lowering the $\phi^4$ temperature) also increased motility.  Given the impact that $\epsilon$ has on the shape of the PFC atom, this isn't especially unexpected, since, as noted, lowering $\epsilon$ increases the effective available space between atoms.  So far, it seems that the interplay between the $\epsilon$ and $\eta_0$ has not yet been adequately reported.
+
+\subsection{Active Matter}
+
+Active matter systems are collections of individual elements that have two core capabilities: first, they self-propel through a medium, and second, they interact with one another.  A consequence of the first capability is that the notion of equilibrium for an active system is quite different than the notion of equilibrium in a non-active, or passive, system.  In passive systems, equilibrium states are low-energy ground states of a thermodynamic potential, such as the Helmholtz free energy $F$ or the grand canonical free energy $\mathcal{G}$.  Equilibrium states are stable, in that a system will return to the equilibrium state following a small perturbation \cite{bowick2022symmetry}.
+
+Active systems, by contrast, are not in a state of thermal equilibrium.  The elements that comprise these systems convert a background energy source through some process, the details of which can typically be ignored, into some form of propulsion.  As a result, both microscopically and macroscopically, active systems exhibit motion, largely independent from the Brownian motion due to thermal energy \cite{ramaswamy2006mechanics}.  A "new" notion of equilibrium is needed to describe active systems, and these equilibria may or may not be "stable."  They may also violate many of the "laws" of physics vis-a-vis thermodynamics and Newtonian mechanics.  The self-propulsion and interactions between particles lead to the formation of novel patterns not found in passive systems, along with the potential for new types of pattern defects \cite{bowick2022symmetry, Shankar2019prx}.  The defects in an active system can themselves become "active" in some systems \cite{bililign2022motile}, exhibiting both self-propulsion and interactions with other defects \cite{bowick2022symmetry}.
+
+An example of such a system is a group of aquatic spinners.  In nature, two well known examples are a bacterium called Thiovohm majus [T. majus] \cite{petroff2015fast} and starfish embryos \cite{tan2022odd}, both of which exhibit spinning behavior at the air-water interface or the water-seafloor interface.  The pinning motion of the individuals creates small vortices which direct water away from the surface (into the bulk), resulting in a long range attractive force between individuals, and, at close range, a transverse force.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[>=Stealth, every node/.style={font=\sffamily}]
+
+    % global sizes
+    \def\D{1.0}              % spinner diameter
+    \def\R{0.5*\D}           % spinner radius
+    \def\gapA{3*\D}          % left panel center-to-center (spinners)
+    \def\gapB{1.5*\D}          % right panel center-to-center (spinners)
+
+    % use previous right-panel half-width as half side of both square panels
+    \def\panelw{2.6*\D}     % half width (and half height) for both panels
+    \def\panelh{\panelw}    % make panels square
+    \def\panelgap{2.6*\D}   % horizontal gap between the two panel boxes
+
+    % compute panel centers so boxes don't overlap
+    \coordinate (PC_L) at (-{\panelw + 0.5*\panelgap},0);
+    \coordinate (PC_R) at ( {\panelw + 0.5*\panelgap},0);
+
+    % colors
+    \definecolor{sea}{RGB}{220,235,245}
+    \definecolor{attract}{RGB}{30,90,200}
+    \definecolor{panelgray}{gray}{0.92}
+
+    % arrow length scalars (shortened by 25%)
+    \def\Lshort{0.75*\D}
+    \def\LshortPerp{0.675*\D} % 0.9*0.75 = 0.675
+
+    % -------------------------
+    % Left panel (centered on PC_L)
+    % -------------------------
+    \begin{scope}[shift={(PC_L)}]
+      % spinner centers (centered inside the panel)
+      \coordinate (L1) at (-0.5*\gapA,0);
+      \coordinate (L2) at ( 0.5*\gapA,0);
+
+      % panel background box (light gray fill) and border (square)
+      \fill[panelgray] (-\panelw,-\panelh) rectangle (\panelw,\panelh);
+      \draw[gray!60] (-\panelw,-\panelh) rectangle (\panelw,\panelh);
+
+      % sea filling the panel box (inset slightly)
+      \fill[sea] (-\panelw+0.06*\D,-\panelh+0.06*\D) rectangle (\panelw-0.06*\D,\panelh-0.06*\D);
+
+      % panel label inside the sea near the top, centered
+      \node[font=\sffamily\bfseries] at (0, \panelh-1.0*\D) {Long-range Attraction};
+
+      % spinner circles (centered within panel)
+      \draw[line width=0.6pt] (L1) circle (\R);
+      \fill[white] (L1) circle (\R);
+      \draw[line width=0.6pt] (L2) circle (\R);
+      \fill[white] (L2) circle (\R);
+
+      % red CCW circular arrows using provided arc start and Stealth head
+      \draw[red, line width=1pt, -{Stealth[length=6pt,width=6pt]}, shorten >=-2pt]
+        ($(L1)-(0.65*\R,0)$) arc (-180:90:0.65*\R);
+      \draw[red, line width=1pt, -{Stealth[length=6pt,width=6pt]}, shorten >=-2pt]
+        ($(L2)-(0.65*\R,0)$) arc (-180:90:0.65*\R);
+
+      % dashed edge-to-edge line (from rim to rim) -- stops at spinner rims
+      \draw[dashed, gray!70] ($(L1)+(\R,0)$) -- ($(L2)+(-\R,0)$);
+
+      % two blue arrows, each shortened by 25%, starting at spinner rim and pointing toward the other
+      \draw[attract, line width=1.6pt, -{Latex[length=6pt,width=6pt]}]
+        ($(L1)+(\R,0)$) -- ++(\Lshort,0);
+      \draw[attract, line width=1.6pt, -{Latex[length=6pt,width=6pt]}]
+        ($(L2)+(-\R,0)$) -- ++(-\Lshort,0);
+    \end{scope}
+
+    % -------------------------
+    % Right panel (centered on PC_R)
+    % -------------------------
+    \begin{scope}[shift={(PC_R)}]
+      % spinner centers (centered inside the panel)
+      \coordinate (R1) at (-0.5*\gapB,0);
+      \coordinate (R2) at ( 0.5*\gapB,0);
+
+      % panel background box (light gray fill) and border (square)
+      \fill[panelgray] (-\panelw,-\panelh) rectangle (\panelw,\panelh);
+      \draw[gray!60] (-\panelw,-\panelh) rectangle (\panelw,\panelh);
+
+      % sea filling the panel box (inset slightly)
+      \fill[sea] (-\panelw+0.06*\D,-\panelh+0.06*\D) rectangle (\panelw-0.06*\D,\panelh-0.06*\D);
+
+      % panel label inside the sea near the top, centered
+      \node[font=\sffamily\bfseries] at (0, \panelh-1.0*\D) {Short-range Torque};
+
+      % spinner circles (centered within panel)
+      \draw[line width=0.6pt] (R1) circle (\R);
+      \fill[white] (R1) circle (\R);
+      \draw[line width=0.6pt] (R2) circle (\R);
+      \fill[white] (R2) circle (\R);
+
+      % red CCW circular arrows using provided arc start and Stealth head
+      \draw[red, line width=1pt, -{Stealth[length=6pt,width=6pt]}, shorten >=-2pt]
+        ($(R1)-(0.65*\R,0)$) arc (-180:90:0.65*\R);
+      \draw[red, line width=1pt, -{Stealth[length=6pt,width=6pt]}, shorten >=-2pt]
+        ($(R2)-(0.65*\R,0)$) arc (-180:90:0.65*\R);
+
+      % dashed edge-to-edge line (from rim to rim)
+      \draw[dashed, gray!70] ($(R1)+(\R,0)$) -- ($(R2)+(-\R,0)$);
+
+      % perpendicular blue arrows shortened by 25%:
+      % left spinner: start at 6 o'clock and point south (downwards)
+      \draw[attract, line width=1.6pt, -{Latex[length=6pt,width=6pt]}]
+        ($(R1)+(0,-\R)$) -- ++(0,-\LshortPerp);
+
+      % right spinner: start at 9 o'clock and point north (upwards)
+      \draw[attract, line width=1.6pt, -{Latex[length=6pt,width=6pt]}]
+        ($(R2)+(0,+\R)$) -- ++(0,\LshortPerp);
+    \end{scope}
+
+  \end{tikzpicture}
+  \caption{Aquatic spinners such as T. majus and starfish embryos exhibit long range attraction and short range torque due to the vortices created by their rotation.}
+  \label{fig:spinners}
+\end{figure}
+
+The stability of PFC atoms and vacancies in the log PFC model lends itself to the study of active matter systems.  The self-propelled dynamics of these spinners and their odd elastic response [see Appendix \ref{appendix:oddElasticity}] were modeled in an adaptation of standard PFC by Huang et al. \cite{huang2025anomalous} by incorporating transverse force terms into $\partial \phi / \partial t$ in Eq.~\ref{eqn:vacancy-pfc-eom}.  Figure 1 from their publication has been included here as Fig.~\ref{fig:active-crystal}.  The solid-liquid interface in panels A, D, and E shows the same diffusive edge found in Fig.~\ref{fig:sl-coexistence-comparison}, as well as the blurring around defects seen in panel C and in Fig.~\ref{fig:grain-boundary-comparison}.  In contrast, a log PFC implementation of this model should conserve the number of swimmers, leading to crystals with sharp interfaces as the solid-liquid boundary, stable vacancy defects within the body of the crystal, and more realistic grain boundaries.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.65\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-active-crystal-panelA.png}
+    \end{subfigure}
+    \vspace{2pt}
+    \begin{subfigure}[t]{0.50\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-active-crystal-panelC.png}
+    \end{subfigure}
+    \caption{Reprint from \cite{huang2025anomalous}, Fig.~1, panels A and C.  Panel A shows a free body diagram of forces between neighboring particles and snapshot of a single-crystal grain rotating due to the unbalanced forces along the outer edge.  The "soft" edge in panels A is consistent with a standard PFC model lacking the $\phi \log \phi$ term, as shown in Fig.~\ref{fig:sl-coexistence-comparison}.  Panel C shows a free body diagram at a dislocation defect within a single crystal, resulting in a net transverse force $F^\perp_\textit{net}$ that causes a pair of dislocations with opposite Burgers vectors $\vec{b}$ (bottom right) to glide apart.  The blurring of atoms around a defect core is similar to the blurring of atoms along a grain boundary in standard PFC, as shown in Fig.~\ref{fig:grain-boundary-comparison}.}
+    \label{fig:active-crystal}
+\end{figure}
+
+Active matter systems such as these are on the frontier of discovery, offering attractive models for studying non-reciprocal interactions \cite{bowick2022symmetry, ishimoto2023odd}, odd elasticity \cite{scheibner2020odd} (see also Appendix \ref{chap:ourModel}), and odd elastic waves \cite{choi2024noise, fossati2024odd}.  The log PFC model seems likely to be an important tool to further these investigations, offering potential advantages over other PFC models and MD simulations \cite{dias2021molecular}.
+
+\subsection{Summary}
+
+The primary focus of this prospectus has been to review the role played by PFC models in describing condensed matter systems.  The PFC model was born out of the interest in modeling systems with large numbers of atoms over longer time scales than accessible to MD simulations, and has succeeded in its predictive and explanatory power, covering a wide range of physical systems and their associated phenomena.  The various shortcomings in standard PFC models noted by Archer et al. \cite{archer2019Deriving} may be ameliorated by the introduction of the novel log PFC model, which looks promising for its ability to give standard PFC a more MD-like view of a system's state and the evolution of those states, as evidenced by differences in the solid-liquid interface, grain boundaries, and stable vacancies.  This enhancement may be particularly applicable to improving the fidelity of dynamics around defect cores or along grain boundaries, as well as providing PFC models with a previously unavailable sense of conservation of the number of atoms in the system.  The role that stable vacancies can play may also further enhance PFC models with multiple constituents, and may provide a mechanism to model antisite defects, building upon the success that PFC models have already shown in modeling elasticity and plasticity with previously unseen insights due to the inherent difference in the log PFC atom. The investigation of active matter systems with PFC models opens a new branch of inquiry, and there is again good reason to think that the log PFC model might play an important role.

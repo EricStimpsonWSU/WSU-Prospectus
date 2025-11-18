@@ -1,28 +1,932 @@
 \section{Log PFC And Applications}
 \label{chap:Related Work}
+The vacancy or log phase field crystal (PFC) model was introduced in the previous section.  For a single-species atomic crystalline solid, the rescaled PFC free energy functional $F(\phi)$ for PFC density $\phi$ is given by
+
+\begin{align}\label{eqn:vacancy-pfc-free-energy}
+    F(\phi) = \int \dpos \left[ \phi \log \phi + \frac{1}{2} \beta \phi \left( \nabla^2 + q_0^2 \right)^2 \phi + \frac{1}{2} \epsilon \phi^2 + \frac{1}{3}g \phi^3 + \frac{1}{4} \phi^4 \right]
+\end{align}
+%
+%\begin{align}
+%    F(\phi) = \int \dpos \left[ \frac{1}{2} \beta \phi \left( \nabla^2 + q_0^2 \right)^2 \phi + \frac{1}{2} \epsilon \phi^2 + \frac{1}{3}g \phi^3 + \frac{1}{4} \phi^4 \right]
+%\end{align}
+%
+and the equation of motion by
+
+\begin{align}\label{eqn:vacancy-pfc-eom}
+    \frac{\partial \phi(\pos, t)}{\partial t} = \vec{\nabla} \cdot \left[ \phi \vec\nabla \mu (\phi)  \right] \approx \nabla^2 \frac{\delta F}{\delta \phi},
+\end{align}
+%\begin{align}
+%    \frac{\partial \phi(\pos, t)}{\partial t} = \nabla^2 \frac{\delta F}{\delta \phi},
+%\end{align}
+%
+for a slowly varying chemical potential $\mu(\phi)$ given by the thermodynamic relation $\mu = \frac{\delta F[\phi]}{\delta \phi}$.  See Appendix \ref{appendix:pfc-rescaling} for notes on rescaling PFC equations.   Eq.~\ref{eqn:vacancy-pfc-eom} can be interpreted as a diffusion equation, where density diffuses from regions with high chemical potential to regions with low chemical potential.  Then, evaluating the functional derivative in Eq.~\ref{eqn:vacancy-pfc-eom} gives
+
+\begin{align}
+    \frac{d \phi}{dt} = \nabla^2 \left[ \log \phi + \beta(\nabla^2 + q_0^2)^2 \phi + \epsilon \phi + g \phi^2 + \phi^3 \right].
+\end{align}
+%\begin{align}
+%    \frac{d \phi}{dt} = \nabla^2 \left[\beta(\nabla^2 + q_0^2)^2 \phi + \epsilon \phi + g \phi^2 + \phi^3 \right].
+%\end{align}
+%
+Additional notes concerning the rescaling process for the PFC model as derived from DFT by Elder, et al. \cite{elder2007phase-field} can be found in Appendix \ref{appendix:A}.
+
+The explicit inclusion of the $\log$ term in eqs. \ref{eqn:vacancy-pfc-free-energy}, \ref{eqn:vacancy-pfc-eom} ensure that the PFC density field $\phi$ is positive definite.  As $\phi \rightarrow 0$, the chemical potential diverges to negative infinity, ensuring that density will always diffuse to areas with density below some critical minimum.
 
 \subsection{Vacancies in Atomic Matter}
 
-\begin{itemize}
-    \item Positive-definite density
-    \item Stable vacancies
-    \item Simulating liquids
-    \item Vacancy defects
-    \item Vacancy diffusion
-\end{itemize}
+While the standard PFC model and the logarithmic PFC models differ only by the retention of the logarithmic term in the latter, the behaviors of the two models exhibit a number of important distinctions.  Both models, for example, can exhibit phase coexistence between a homogeneous, low-density liquid and a periodic, high-density crystalline solid, as shown in Fig.~\ref{fig:sl-coexistence-comparison}.  In this figure, systems were initialized with low-density regions at the top and bottom and a single crystal along two different orientations in the middle of the simulation field and relaxed in accordance with Eq.~\ref{eqn:vacancy-pfc-eom} to find their respective equilibrium states for both standard PFC and log PFC using model parameters appropriate for phase coexistence in each model [standard PFC: $\beta = 0.5, \epsilon = -0.15, g = 0$, $\phi_s = -0.23$ and $\phi_l = -0.27$ (solid and liquid respectively); log PFC: $\beta = 0.5, \epsilon = -2.5, g = -1, \phi_s = 0.50$, and $\phi_l = 0.21$].  The standard PFC model does allow phase coexistence, though the interface between the two regions is not as clearly defined.  Fig.~\ref{fig:sl-coexistence-comparisona}, shows the average edge profile for each configuration as it evolved from a sharp edge initial state.  The standard PFC model equilibrium profiles exhibit a smooth transition in density peaks spanning multiple lattice constants $a$.  The log PFC profiles contrastingly exhibit equilibrium profiles that are more similar to the initial conditions.  In the standard PFC, some of the initial density in atoms at the boundary of the solid region has diffused into the low-density region, and the low-density region is no longer uniform, but rather shows traces of new atoms forming along the boundary.  The log PFC, by contrast, maintains a sharp boundary between the liquid and solid regions.  An alternative interpretation of these results is that standard PFC phase coexistence is more like a diffuse solid-liquid border at equilibrium, with atoms temporarily attaching and detaching along the interface over diffusive time scales, while the log PFC model equilibrium is more like an MD simulation snapshot of the system's ground state.
 
-\subsection{Binary Systems}
+\pgfplotsset{
+  myimageaxis/.style={
+    width=\textwidth,
+    height=\textwidth,
+    scale only axis,
+    xmin=0, xmax=1, ymin=0, ymax=1,
+    axis line style={draw=none},
+    axis on top,
+    axis equal image,
+    enlarge x limits=false,
+    enlarge y limits=false,
+    xlabel=\empty, ylabel=\empty,
+    xtick=\empty, ytick=\empty,
+    clip=true,
+    tick style={draw=none},
+    every outer x axis line/.style={draw=none},
+    every outer y axis line/.style={draw=none}
+  }
+}
 
-\begin{itemize}
-    \item hBN, SiC
-    \item Vacancies in binaries
-    \item Surface tension
-\end{itemize}
+\pgfplotsset{
+  myplotaxis/.style={
+    width=\textwidth,
+    height=0.6\textwidth,
+    scale only axis,
+    xmin=0, xmax=1, ymin=0, ymax=1,
+    axis line style={draw=none},
+    axis on top,
+    axis equal image,
+    enlarge x limits=false,
+    enlarge y limits=false,
+    xlabel=\empty, ylabel=\empty,
+    xtick=\empty, ytick=\empty,
+    clip=true,
+    tick style={draw=none},
+    every outer x axis line/.style={draw=none},
+    every outer y axis line/.style={draw=none}
+  }
+}
 
-\subsection{Active Matter}
+% in preamble
+\tikzset{
+  tri/halo/.style={line width=12pt, white, opacity=0.25, join=round},
+  tri/line/.style={draw=cyan!50, line width=1.2pt, join=round},
+  tri/label/.style={
+    midway, sloped, allow upside down=false,
+    font=\scriptscriptstyle, inner sep=1pt,
+    fill=white, fill opacity=0.8, text opacity=1,
+    rounded corners=1pt, yshift=1.5pt
+  }
+}
 
-\begin{itemize}
-    \item Transverse interactions
-    \item Active matter crystals and Odd dynamics
-    \item Vacancies in active matter crystals
-\end{itemize}
+\newcommand{\FixedTriangleOverlay}{%
+    \pgfmathsetmacro{\dx}{1.0/14}%
+    \pgfmathsetmacro{\dy}{(\dx)*sqrt(3)/2}%
+    \pgfmathsetmacro{\x}{0.785}%
+    \pgfmathsetmacro{\y}{0.37}%
+    \coordinate (A) at (axis cs:\x,\y);%
+    \coordinate (B) at (axis cs:{\x+\dx},\y);%
+    \coordinate (C) at (axis cs:{\x+\dx/2},{\y+\dy});%
+    
+    % halo behind edges
+    \draw[line width=12pt, white, opacity=0.25, join=round]
+        (A) -- (B) -- (C) -- cycle;
+
+    % colored triangle and boxed labels
+    \draw[cyan!50]
+        (A) -- (B) node[midway, sloped, below, allow upside down=false, outer sep = 1pt] {$\scalebox{0.6}{a}$}
+            -- (C) node[midway, sloped, above, allow upside down=false, outer sep = 1pt] {$\scalebox{0.6}{a}$}
+            -- (A) node[midway, sloped, above, allow upside down=false, outer sep = 1pt] {$\scalebox{0.6}{a}$};
+}
+
+\newcommand{\FixedTriangleOverlayR}{%
+    \pgfmathsetmacro{\dx}{1.0/14}%
+    \pgfmathsetmacro{\dy}{(\dx)*sqrt(3)/2}%
+    \pgfmathsetmacro{\x}{0.752}
+    \pgfmathsetmacro{\y}{0.355}
+    \coordinate (A) at (axis cs:\x,\y);
+    \coordinate (B) at (axis cs:{\x},\y+\dx);
+    \coordinate (C) at (axis cs:{\x+\dy},{\y+\dx/2});
+    
+    % halo behind edges
+    \draw[line width=12pt, white, opacity=0.25, join=round]
+        (A) -- (B) -- (C) -- cycle;
+
+    % colored triangle and boxed labels
+    \draw[cyan!50]
+        (A) -- (B) node[midway, sloped, above, allow upside down=false, outer sep = 1pt] {$\scalebox{0.6}{a}$}
+            -- (C) node[midway, sloped, above, allow upside down=false, outer sep = 1pt] {$\scalebox{0.6}{a}$}
+            -- (A) node[midway, sloped, below, allow upside down=false, outer sep = 1pt] {$\scalebox{0.6}{a}$};
+}
+\captionsetup[subfigure]{aboveskip=0pt,belowskip=0pt,skip=0pt}
+
+\begin{figure}[!htbp]
+  \centering
+
+  % first row group title and two groups side-by-side:
+  \begin{minipage}{0.49\textwidth}
+    \centering\textbf{Standard PFC}
+  \end{minipage}\hfill
+  \begin{minipage}{0.49\textwidth}
+    \centering\textbf{Log PFC}
+  \end{minipage}
+
+  \vspace{2pt} % tiny vertical gap
+
+  % first row group title and two groups side-by-side:
+  \begin{minipage}{0.24\textwidth}
+    \centering\textbf{$0^\circ$}
+  \end{minipage}\hfill
+  \begin{minipage}{0.24\textwidth}
+    \centering\textbf{$90^\circ$}
+  \end{minipage}\hfill
+  \begin{minipage}{0.24\textwidth}
+    \centering\textbf{$0^\circ$}
+  \end{minipage}\hfill
+  \begin{minipage}{0.24\textwidth}
+    \centering\textbf{$90^\circ$}
+  \end{minipage}
+
+  \vspace{2pt} % tiny vertical gap
+
+  % ROW 1: four subfigures (each one is independent)
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl-coexistence-stdpfc-t0.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=0$};
+        \fill[green!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlay
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl90-coexistence-stdpfc-t0.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=0$};
+        \fill[green!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlayR
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl-coexistence-logpfc-t0.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=0$};
+        \fill[green!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlay
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl90-coexistence-logpfc-t0.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=0$};
+        \fill[green!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlayR
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+
+  \vspace{3pt} % tweak small vertical gap between rows
+
+  % ROW 2: four more subfigures (same pattern)
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl-coexistence-stdpfc-t10.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=10$};
+        \fill[cyan!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlay
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl90-coexistence-stdpfc-t10.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=10$};
+        \fill[cyan!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlayR
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl-coexistence-logpfc-t1.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=1$};
+        \fill[cyan!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlay
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl90-coexistence-logpfc-t1.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=1$};
+        \fill[cyan!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlayR
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+
+  % ROW 3: four more subfigures (same pattern)
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl-coexistence-stdpfc-t1000.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=1\,000$};
+        \fill[orange!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlay
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl90-coexistence-stdpfc-t1000.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=1\,000$};
+        \fill[orange!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlayR
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl-coexistence-logpfc-t100.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=100$};
+        \fill[orange!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlay
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.24\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=1]{fig/fig-sl90-coexistence-logpfc-t100.png};
+        \node[white, anchor=west] at (axis cs:0.1,0.9) {$t=100$};
+        \fill[orange!50, fill opacity=0.25] (axis cs:0.5,0) rectangle (axis cs:{0.5+1/14},1);
+        \FixedTriangleOverlayR
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+
+%  % ROW 4: four more subfigures (same pattern)
+%  \begin{subfigure}{0.24\textwidth}
+%    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+%      \begin{axis}[myimageaxis, axis equal image=false, height=0.5\textwidth]
+%        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=0.9]{fig/fig-sl-coexistence-stdpfc-profile.png};
+%        \node[black, anchor=north west] at (axis cs:0,1) {\scalebox{0.4}{$\mean\phi(y)$}};
+%        \node[black, anchor=south east] at (axis cs:1,0) {\scalebox{0.4}{$a$}};
+%      \end{axis}
+%    \end{tikzpicture}
+%  \end{subfigure}\hfill
+%  \begin{subfigure}{0.24\textwidth}
+%    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+%      \begin{axis}[myimageaxis, axis equal image=false, height=0.5\textwidth]
+%        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=0.9]{fig/fig-sl90-coexistence-stdpfc-profile.png};
+%        \node[black, anchor=north west] at (axis cs:0,1) {\scalebox{0.4}{$\mean\phi(y)$}};
+%        \node[black, anchor=south east] at (axis cs:1,0) {\scalebox{0.4}{$a$}};
+%      \end{axis}
+%    \end{tikzpicture}
+%  \end{subfigure}\hfill
+%  \begin{subfigure}{0.24\textwidth}
+%    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+%      \begin{axis}[myimageaxis, axis equal image=false, height=0.5\textwidth]
+%        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=0.9]{fig/fig-sl-coexistence-logpfc-profile.png};
+%        \node[black, anchor=north west] at (axis cs:0,1) {\scalebox{0.4}{$\mean\phi(y)$}};
+%        \node[black, anchor=south east] at (axis cs:1,0) {\scalebox{0.4}{$a$}};
+%      \end{axis}
+%    \end{tikzpicture}
+%  \end{subfigure}\hfill
+%  \begin{subfigure}{0.24\textwidth}
+%    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+%      \begin{axis}[myimageaxis, axis equal image=false, height=0.5\textwidth]
+%        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=0.9]{fig/fig-sl90-coexistence-logpfc-profile.png};
+%        \node[black, anchor=north west] at (axis cs:0,1) {\scalebox{0.4}{$\mean\phi(y)$}};
+%        \node[black, anchor=south east] at (axis cs:1,0) {\scalebox{0.4}{$a$}};
+%      \end{axis}
+%    \end{tikzpicture}
+%  \end{subfigure}
+
+  \caption{Comparison of solid-liquid interface for standard and log PFC models with $0^\circ$ and $90^\circ$ orientations of the solid-liquid interface.  The initial configuration ($t=0$) are shown on the first row, an intermediate configuration ($t=10$ for standard PFC, $t=1$ for log PFC) is shown on the second row, and the equilibrium state ($t = 1\,000$ for standard PFC, $t = 100$ for log PFC) on the third row.  The lattice constant $a$ is displayed for each lattice and is the $x$-axis of the average density plots in Fig.~\ref{fig:sl-coexistence-comparisona}.  The standard PFC parameters were $\beta = 0.5, \epsilon = -0.15, g = 0$, $\phi_s = -0.23$ and $\phi_l = -0.27$ (solid and liquid respectively).  The log PFC parameters were $\beta = 0.5, \epsilon = -2.5, g = -1, \phi_s = 0.50$, and $\phi_l = 0.21$.}
+  \label{fig:sl-coexistence-comparison}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+
+  % first row group title and two groups side-by-side:
+  \begin{minipage}{0.98\textwidth}
+    \centering\textbf{Standard PFC}
+  \end{minipage}\hfill
+
+  \vspace{2pt} % tiny vertical gap
+
+  % first row group title and two groups side-by-side:
+  \begin{minipage}{0.48\textwidth}
+    \centering\textbf{$0^\circ$}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering\textbf{$90^\circ$}
+  \end{minipage}
+
+  \vspace{2pt} % tiny vertical gap
+
+  % ROW 4: four more subfigures (same pattern)
+  \begin{subfigure}{0.48\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis, axis equal image=false, height=0.5\textwidth]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=0.9]{fig/fig-sl-coexistence-stdpfc-profile.png};
+        \node[black, anchor=north west] at (axis cs:0,1) {\scalebox{0.4}{$\mean\phi(y)$}};
+        \node[black, anchor=south east] at (axis cs:1,0) {\scalebox{0.4}{$a$}};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis, axis equal image=false, height=0.5\textwidth]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=0.9]{fig/fig-sl90-coexistence-stdpfc-profile.png};
+        \node[black, anchor=north west] at (axis cs:0,1) {\scalebox{0.4}{$\mean\phi(y)$}};
+        \node[black, anchor=south east] at (axis cs:1,0) {\scalebox{0.4}{$a$}};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+  
+  \vspace{3ex} % tiny vertical gap
+
+  \begin{minipage}{0.98\textwidth}
+    \centering\textbf{Log PFC}
+  \end{minipage}
+
+  % first row group title and two groups side-by-side:
+  \begin{minipage}{0.48\textwidth}
+    \centering\textbf{$0^\circ$}
+  \end{minipage}\hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering\textbf{$90^\circ$}
+  \end{minipage}
+
+  \vspace{2pt} % tiny vertical gap
+
+  \begin{subfigure}{0.48\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis, axis equal image=false, height=0.5\textwidth]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=0.9]{fig/fig-sl-coexistence-logpfc-profile.png};
+        \node[black, anchor=north west] at (axis cs:0,1) {\scalebox{0.4}{$\mean\phi(y)$}};
+        \node[black, anchor=south east] at (axis cs:1,0) {\scalebox{0.4}{$a$}};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\textwidth}
+    \begin{tikzpicture}[baseline=(current bounding box.center),inner sep=0pt]
+      \begin{axis}[myimageaxis, axis equal image=false, height=0.5\textwidth]
+        \addplot graphics [xmin=0,xmax=1,ymin=0,ymax=0.9]{fig/fig-sl90-coexistence-logpfc-profile.png};
+        \node[black, anchor=north west] at (axis cs:0,1) {\scalebox{0.4}{$\mean\phi(y)$}};
+        \node[black, anchor=south east] at (axis cs:1,0) {\scalebox{0.4}{$a$}};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+
+  \caption{Comparison of solid-liquid interface for standard and log PFC models with $0^\circ$ and $90^\circ$ orientations of the solid-liquid interface.  Each subplot shows the average density as a function of $y$ (vertical direction) at each time slice in Fig \ref{fig:sl-coexistence-comparison} with the corresponding regions highlighted in rows one to three.}
+  \label{fig:sl-coexistence-comparisona}
+\end{figure}
+
+%\begin{figure}[!htbp]
+%  \centering
+%  % Row 1: top image (centered)
+%  \begin{subfigure}{0.45\textwidth}
+%    \centering
+%    % place a named TikZ node around the image so overlay can reference it
+%    \tikz[baseline=(top.base)] \node (top) {\includegraphics[width=\linewidth]{fig/fig-sl-coexistence-initial.png}};
+%    \vskip 2pt
+%    \caption*{\textbf{Initial $\phi^0$ density field}}
+%  \end{subfigure}
+%
+%  \vspace{1.5ex} % vertical space between rows; adjust as needed
+%
+%  % Row 2: two images side-by-side
+%  \begin{subfigure}{0.45\textwidth}
+%    \centering
+%    \tikz[baseline=(left.base)] \node (left) {\includegraphics[width=\linewidth]{fig/fig-sl-coexistence-stdpfc.png}};
+%    \vskip 2pt
+%    \caption*{\textbf{Standard PFC $\phi^\text{eq}$}}
+%  \end{subfigure}
+%  \hfill
+%  \begin{subfigure}{0.45\textwidth}
+%    \centering
+%    \tikz[baseline=(right.base)] \node (right) {\includegraphics[width=\linewidth]{fig/fig-sl-coexistence-logpfc.png}};
+%    \vskip 2pt
+%    \caption*{\textbf{Log PFC $\phi^\text{eq}$}}
+%  \end{subfigure}
+%
+%  \caption{A comparison of solid–liquid phase coexistence: the initial condition (top) and the resulting standard PFC model (left) and log PFC model (right) equilibrium states below.}
+%  \label{fig:sl-coexistence-comparison}
+%\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+
+  % Row 1 label
+  \parbox{\textwidth}{\bfseries Standard PFC:\par}
+  \vspace{1ex}
+
+  % Row 1: five images side-by-side
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-initial.png}
+    \vskip 2pt
+    \caption*{\textbf{Initial $\phi^0$}}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-t5.png}
+    \vskip 2pt
+    \caption*{$t=5$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-t10.png}
+    \vskip 2pt
+    \caption*{$t=10$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-t15.png}
+    \vskip 2pt
+    \caption*{$t=15$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-t20.png}
+    \vskip 2pt
+    \caption*{$t=20$}
+  \end{subfigure}
+
+  \vspace{1.5ex} % space between rows
+
+  % Row 2 label
+  \parbox{\textwidth}{\bfseries Log PFC:\par}
+  \vspace{1ex}
+
+  % Row 2: five images side-by-side
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-initial.png}
+    \vskip 2pt
+    \caption*{\textbf{Initial $\phi^0$}}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-t5-log.png}
+    \vskip 2pt
+    \caption*{$t=5$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-t10-log.png}
+    \vskip 2pt
+    \caption*{$t=10$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-t15-log.png}
+    \vskip 2pt
+    \caption*{$t=15$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.15\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-t20-log.png}
+    \vskip 2pt
+    \caption*{$t=20$}
+  \end{subfigure}
+
+  \caption{Comparison of single-atom vacancy behavior in standard and log PFC models. The first row shows the time progression of a single vacancy in the standard PFC model. The second row shows the time progression in the log PFC model.  The standard PFC parameters were $\beta = 0.5, \epsilon = -0.15, g = 0$, $\phi_s = -0.23$ and $\phi_v = -0.27$ (solid and vacancy respectively).  The log PFC parameters were $\beta = 0.5, \epsilon = -2.5, g = -1, \phi_s = 0.50$, and $\phi_v = 0.21$.}
+  \label{fig:single-vacancy-comparison}
+\end{figure}
+
+Another distinction between the two models is exhibited by initializing a single atomic vacancy within an otherwise uniform solid region, as shown in Fig.~\ref{fig:single-vacancy-comparison}.  Time series for both the standard PFC model and log PFC model show how the vacancy diffuses away in the first case but is stable in the second case.  Both of these results indicate a key difference between the two models; whereas the interface between the homogenous phase and crystalline phase in standard PFC is fairly smooth and diffuse, the log PFC is capable of producing sharp interfaces and stable vacancies under certain conditions related to model parameters overall system density, and local density in a particular region of the density field.
+
+\subsubsection{Phase Diagram}
+
+The phase diagram for a PFC model specifies the phase (liquid or solid) for a given set of model parameters and specified system average density $\mean\phi$.  Simulation results from both standard and log PFC models find four distinct phases: one constant density (liquid) phase and three distinct periodic (solid) phases, triangle, stripe, and honeycomb, depicted in Fig.~\ref{fig:lattice-comparison-tsh}.  The one-mode approximation for each of the solid phases,
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.30\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-triangle-lattice.png}
+        \caption*{\textbf{Triangle Lattice:} $\mean\phi=-0.1$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.30\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-stripe-lattice.png}
+        \caption*{\textbf{Striped Lattice:} $\mean\phi=0.01$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.30\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-honeycomb-lattice.png}
+        \caption*{\textbf{Honeycomb Lattice:} $\mean\phi=+0.1$}
+    \end{subfigure}
+    \caption{PFC density field showing triangle, stripe, and honeycomb lattices ground states, corresponding to $\mean{\phi} = -0.1, 0.01,$ and $+0.1$ respectively with model parameters $\beta = 0.5, \epsilon = -0.15$, and $g = 0$.}
+    \label{fig:lattice-comparison-tsh}
+\end{figure}
+
+\begin{subequations}
+\begin{align}
+\phi_C &= \mean\phi & \text{[constant (liquid)]} \\
+\phi_T &= \mean\phi + A_T(\cos(q_T x) \cos\left(\frac{q_T y}{\sqrt{3}}\right) + \frac{1}{2}\cos\left(\frac{2 q_T y}{\sqrt{3}}\right) & \text{[triangle]} \\
+\phi_S &= \mean\phi + A_S \sin(q_S x) & \text{[stripe]} \\
+\phi_H &= \mean\phi - A_H(\cos(q_H x) \cos\left(\frac{q_H y}{\sqrt{3}}\right) + \frac{1}{2}\cos\left(\frac{2 q_H y}{\sqrt{3}}\right) & \text{[honeycomb]}
+\end{align}    
+\end{subequations}
+%
+is used as an ansatz in the free energy functional in Eq.~\ref{eqn:vacancy-pfc-free-energy} (disregarding the log term for standard PFC), and used to calculate the energy density for each phase
+
+\begin{subequations}
+\begin{align}
+f_C = \frac{F_C}{V} &= \frac{1}{2}(\epsilon + q_0^4 \beta) \mean\phi^2 + \frac{1}{3}g \mean\phi^3 + \frac{1}{4}\mean\phi^4 \\
+f_{T,H} = \frac{F_{T,H}}{V} &= \frac{1}{2}(\epsilon + \beta (q_{T,H}^2 - q_0^2)^2 ) \mean\phi^2 + \frac{1}{3}g \mean\phi^3 + \frac{1}{4}\mean\phi^4 \\ \nonumber
+& \quad + 3 [\epsilon + 2 g \mean\phi + 3 \mean\phi^2 + \beta(q_{T,H} - q_0^2)^2]A_{T,H}^2  \\ \nonumber
+& \quad + 4 (g + 3 \mean\phi)A_{T,H}^3 + \frac{45}{2}A_{T,H}^4 \\
+f_S = \frac{F_S}{V} &= \frac{1}{2}(\epsilon + \beta (q_{T,H}^2 - q_0^2)^2 ) \mean\phi^2 + \frac{1}{3}g \mean\phi^2 + \frac{1}{4}\mean\phi^4 \\ \nonumber
+& \quad + \frac{1}{4} [\epsilon + 2 g \mean\phi + 3 \mean\phi^2 + \beta(q_S - q_0^2)^2]A_S^2  \\ \nonumber
+& \quad + \frac{3}{32}A_S^4
+\end{align}
+\end{subequations}
+%
+and then minimized for $A_\xi, q_\xi$, where $\xi \in \{\text{T, S, H}\}$.  For standard PFC this gives
+
+\begin{subequations}
+\begin{align}
+A_T = \frac{1}{15} \left[ -g - 3\mean\phi - \sqrt{g^2 - 24 g \mean\phi - 36 \mean\phi^2 - 15 \epsilon} \, \right], & \quad q_T = q_0 \\
+A_S = -\frac{2}{3} \sqrt{-3 \epsilon - 6g\mean\phi - 9 \mean\phi^2}, & \quad q_S = q_0 \\
+A_H = \frac{1}{15} \left[ -g - 3\mean\phi + \sqrt{g^2 - 24 g \mean\phi - 36 \mean\phi^2 - 15 \epsilon} \, \right], & \quad q_H = q_0
+\end{align}    
+\end{subequations}
+
+These values are then substituted back into the free energy densities to give the energy density for each phase as a function of model parameters and average density.  For simplicity, with $g=0$, these give
+\begin{subequations}
+\begin{align}
+f_C(\mean\phi) &= \frac{1}{2}(\epsilon + q_0^4 \beta) \mean\phi^2 + \frac{1}{4}\mean\phi^4 \\
+f_T(\mean\phi) &= - \frac{13}{500} \mean\phi^4 + \frac{4}{375} \left( \frac{1}{5} + \frac{1}{3} \mean\phi^2 \right) \sqrt{-15 \epsilon - 36 \mean\phi^2} + \frac{7}{50} \epsilon \mean\phi^2 - \frac{1}{10} \epsilon^2 \\
+f_S(\mean\phi) &= - \frac{5}{4} \mean\phi^4 - \frac{1}{2} \epsilon \mean\phi^2 - \frac{1}{6} \epsilon^2  \\
+f_H(\mean\phi) &= - \frac{13}{500} \mean\phi^4 - \frac{4}{375} \left( \frac{1}{5} + \frac{1}{3} \mean\phi^2 \right) \sqrt{-15 \epsilon - 36 \mean\phi^2} + \frac{7}{50} \epsilon \mean\phi^2 - \frac{1}{10} \epsilon^2. \\
+\end{align}
+\end{subequations}
+%
+At a given density, the phase having the lowest energy density represents the ground state as represented in Fig.~\ref{fig:std-pfc-phase-diagram}, a phase diagram for standard PFC.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.6\linewidth,
+      height=0.4\linewidth,
+      xmin=-0.3, xmax=0.30,
+      ymin=-0.3, ymax=0.10,
+      axis line style={draw=none},  % hide default axis lines
+      xlabel = {\(\mean\phi\)},
+      ylabel = {\(\epsilon\)},
+      ylabel style={font=\Large, yshift=2pt},
+      xtick={-0.3,-0.2,-0.1,0,0.1,0.2,0.3},
+      ytick={-0.3,-0.2,-0.1,0,0.1},
+      minor x tick num=9,  % creates minor ticks between majors -> spacing 0.02
+      minor y tick num=9,
+      extra x ticks={-0.3,-0.2,-0.1,0,0.1,0.2,0.3},
+      extra y ticks={-0.3,-0.2,-0.1,0,0.1},
+      % show the extra x labels on the top and extra y labels on the right
+      extra x tick style={
+          tick align=outside,
+          xticklabel pos=upper,      % put these labels on the top edge
+          major tick length=3pt
+      },        
+      extra y tick style={
+          tick align=outside,
+          yticklabel pos=right,      % put these labels on the top edge
+          major tick length=3pt
+      },        
+      tick align=outside,
+      every tick/.style={black},
+      every minor tick/.style={black!60},
+      major tick length=3pt,
+      minor tick length=1.5pt,
+      label style={font=\small},
+      tick label style={font=\small},
+      clip=true
+    ]
+
+    % Draw a rectangular box for the plotting region
+    \draw[black] (axis cs:-0.3,0.1) rectangle (axis cs:0.3,-0.3);
+
+    % Plot functions (example)
+    \addplot [
+      domain=-0.1:0.1,
+      samples=200,
+      color=black,
+      thick
+    ] {-30*x^2};
+
+    \addplot [
+      domain=-0.3:0.3,
+      samples=200,
+      color=black,
+      thick
+    ] {-3*x^2};
+    
+    \node[rotate=60, font=\large\mdseries, anchor=center, color=black!60] at (axis cs:-0.14,-0.15) {Triangle};
+    \node[rotate=270, font=\large\mdseries, anchor=center, color=black!60] at (axis cs:0.0,-0.15) {Stripe};
+    \node[rotate=300, font=\large\mdseries, anchor=center, color=black!60] at (axis cs:0.14,-0.15) {Honeycomb};
+    \node[font=\large\mdseries, anchor=center, color=black!40] at (axis cs:0.0,0.05) {Liquid};
+
+    % ---- Triangle swatch: place image and clip to region between two curves on x in [-0.3,0] ----
+    \begin{scope}
+      % define clip path by plotting upper curve from x=-0.3..0 then lower curve back from x=0..-0.3
+      \clip
+        plot[domain=-0.3:0, samples=200] (axis cs:\x, {-3*\x*\x})
+        -- plot[domain=0:-0.3, samples=200] (axis cs:\x, {-30*\x*\x})
+        -- cycle;
+      % place image at the center of the clipped region; adjust width as needed
+      \node[opacity=0.30, anchor=center] at (axis cs:-0.15,-0.12)
+        {\includegraphics[width=4.6cm]{fig/fig-triangle-lattice.png}};
+    \end{scope}
+
+    % ---- Stripe swatch: place image and clip to region between two curves on x in [-0.1,0.1] ----
+    \begin{scope}
+      % define clip path by plotting upper curve from x=-0.3..0 then lower curve back from x=-0.1..-0.1
+      \clip
+        plot[domain=-0.1:0.1, samples=200] (axis cs:\x, {-30*\x*\x})
+        -- cycle;
+      % place image at the center of the clipped region; adjust width as needed
+      \node[opacity=0.30, anchor=center] at (axis cs:0,-0.12)
+        {\includegraphics[width=4.6cm]{fig/fig-stripe-lattice.png}};
+    \end{scope}
+    
+    % ---- Honeycomb swatch: place image and clip to region between two curves on x in [0,0.3] ----
+    \begin{scope}
+      % define clip path by plotting upper curve from x=0..0.3 then lower curve back from x=0.3..0
+      \clip
+        plot[domain=0:0.3, samples=200] (axis cs:\x, {-3*\x*\x})
+        -- plot[domain=0.3:0, samples=200] (axis cs:\x, {-30*\x*\x})
+        -- cycle;
+      % place image at the center of the clipped region; adjust width as needed
+      \node[opacity=0.30, anchor=center] at (axis cs:0.15,-0.12)
+        {\includegraphics[width=4.6cm]{fig/fig-honeycomb-lattice.png}};
+    \end{scope}
+
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Phase diagram for standard PFC model with $\beta=1$ and $g=0$ calculated from minimum energy.}
+  \label{fig:std-pfc-phase-diagram}
+\end{figure}
+
+For the log PFC, the process is the same, but the calculations must be carried out numerically.  A result for log PFC is shown in Fig.~\ref{fig:log-pfc-phase-diagram}, where $g=-0.2$ was used to shift the phase diagram to the right so that all three solid phases were present.
+
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.6\linewidth,
+      height=0.4\linewidth,
+      xmin=0, xmax=0.40,
+      ymin=-0.4, ymax=0,
+      axis line style={draw=none},  % hide default axis lines
+      xlabel = {\(\mean\phi\)},
+      ylabel = {\(\epsilon\)},
+      ylabel style={font=\Large, yshift=2pt},
+      xtick={0,0.1,0.2,0.3,0.4},
+      ytick={-0.4,-0.3,-0.2,-0.1,0},
+      extra x ticks={0,0.1,0.2,0.3,0.4},
+      extra y ticks={-0.4,-0.3,-0.2,-0.1,0},
+      % show the extra x labels on the top and extra y labels on the right
+      extra x tick style={
+          tick align=outside,
+          xticklabel pos=upper,      % put these labels on the top edge
+          major tick length=3pt
+      },        
+      extra y tick style={
+          tick align=outside,
+          yticklabel pos=right,      % put these labels on the top edge
+          major tick length=3pt
+      },        
+      minor x tick num=9,  % creates minor ticks between majors -> spacing 0.02
+      minor y tick num=9,
+      tick align=outside,
+      every tick/.style={black},
+      every minor tick/.style={black!60},
+      major tick length=3pt,
+      minor tick length=1.5pt,
+      label style={font=\small},
+      tick label style={font=\small},
+      clip=true
+    ]
+
+    % Draw a rectangular box for the plotting region
+    \draw[black] (axis cs:0,0) rectangle (axis cs:0.4,-0.4);
+
+    % Plot functions (example)
+    \addplot [
+      domain=0:0.4,
+      samples=200,
+      color=black,
+      thick
+    ] {-300*(x-0.2)^2-0.1};
+
+    \addplot [
+      domain=0:0.4,
+      samples=200,
+      color=black,
+      thick
+    ] {-16*(x-0.2)^2-0.1};
+    
+    \node[rotate=70, font=\large\mdseries, anchor=center, color=black!60] at (axis cs:0.14,-0.275) {Triangle};
+    \node[rotate=270, font=\large\mdseries, anchor=center, color=black!60] at (axis cs:0.2,-0.275) {Stripe};
+    \node[rotate=290, font=\large\mdseries, anchor=center, color=black!60] at (axis cs:0.26,-0.275) {Honeycomb};
+    \node[font=\large\mdseries, anchor=center, color=black!40] at (axis cs:0.2,-0.05) {Liquid};
+
+    % ---- Triangle swatch: place image and clip to region between two curves on x in [-0.3,0] ----
+    \begin{scope}
+      % define clip path by plotting upper curve from x=-0.3..0 then lower curve back from x=0..-0.3
+      \clip
+        plot[domain=0:0.2, samples=200] (axis cs:\x, {-16*(\x-0.2)*(\x-0.2)-0.1})
+        -- plot[domain=0.2:0, samples=200] (axis cs:\x, {-300*(\x-0.2)*(\x-0.2)-0.1})
+        -- cycle;
+      % place image at the center of the clipped region; adjust width as needed
+      \node[opacity=0.30, anchor=center] at (axis cs:0.14,-0.275)
+        {\includegraphics[width=4.6cm]{fig/fig-triangle-lattice.png}};
+    \end{scope}
+
+    % ---- Stripe swatch: place image and clip to region between two curves on x in [-0.1,0.1] ----
+    \begin{scope}
+      % define clip path by plotting upper curve from x=-0.3..0 then lower curve back from x=-0.1..-0.1
+      \clip
+        plot[domain=0.1:0.3, samples=200] (axis cs:\x, {-300*(\x-0.2)*(\x-0.2)-0.1})
+        -- cycle;
+      % place image at the center of the clipped region; adjust width as needed
+      \node[opacity=0.30, anchor=center] at (axis cs:0.2,-0.275)
+        {\includegraphics[width=4.6cm]{fig/fig-stripe-lattice.png}};
+    \end{scope}
+    
+    % ---- Honeycomb swatch: place image and clip to region between two curves on x in [0,0.3] ----
+    \begin{scope}
+      % define clip path by plotting upper curve from x=0..0.3 then lower curve back from x=0.3..0
+      \clip
+        plot[domain=0.2:0.4, samples=200] (axis cs:\x, {-16*(\x-0.2)*(\x-0.2)-0.1})
+        -- plot[domain=0.4:0.2, samples=200] (axis cs:\x, {-300*(\x-0.2)*(\x-0.2)-0.1})
+        -- cycle;
+      % place image at the center of the clipped region; adjust width as needed
+      \node[opacity=0.30, anchor=center] at (axis cs:0.26,-0.275)
+        {\includegraphics[width=4.6cm]{fig/fig-honeycomb-lattice.png}};
+    \end{scope}
+
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Phase diagram for log PFC model with $\beta=1$ and $g=-0.2$ calculated from minimum energy.}
+  \label{fig:log-pfc-phase-diagram}
+\end{figure}
+
+\subsection{Thermal Noise}
+Thermal noise can be added to a PFC simulation by adding random density fluctuations to the system via the equation of motion.  The standard approach is to define a noise field $\eta$ as
+%
+\begin{align}
+    \langle \eta(\pos, t)\eta(\pos', t') \rangle = -\eta_0 \nabla^2\delta(\pos - \pos')\delta(t-t').
+\end{align}
+%
+where the strength of the noise is controlled by the $\eta_0$ parameter.  The noise is then added to the equation of motion in Eq.~\ref{eqn:vacancy-pfc-eom} as
+%
+\begin{align}\label{eqn:vacancy-pfc-eom-noise}
+    \frac{d \phi}{dt} = \vec{\nabla} \cdot \left[ \vec\nabla \mu (\phi)  \right] \approx \nabla^2 \frac{\delta F}{\delta \phi} + \eta.
+\end{align}
+%
+There are several applications where the use of noise dynamics is beneficial in either standard or log PFC simulations, including moving over energy boundaries in pseudo-equilibrium states as in simulated annealing, measuring the strength of bonds between atoms in solid regions or between phase boundaries, investigating dynamics along grain boundaries, and, in the case of log PFC with stable atoms and vacancies, measuring vacancy diffusion and other MD-like statistics.
+
+\subsubsection{Atom/Vacancy Stability}
+
+Here, atom/vacancy stability refers to the degree to which the number of atoms and vacancies in a simulation is stable, especially as thermal noise is added to impart MD-like motion.  In Fig.~\ref{fig:single-vacancy-comparison}, the stability of a single vacancy within a solid region was demonstrated when no thermal noise was added to the system.  However, simulations with thermal noise as in Eq.~\ref{eqn:vacancy-pfc-eom-noise} can nucleate an atom at a vacancy site, or de-nucleate a vacancy at an atom site.  For a particular set of model parameters [assume $\epsilon, \beta, g$ are fixed for the remainder of this section, as well as the size of the simulation box], the stability of the number of atoms in the system $N$, while thermal noise is being added to the system via $\eta$, is a function of the average density of the system $\mean\phi$.  In particular, for any mean density in the range of densities which leads to phase coexistence between the liquid phase and the solid (triangular lattice) phase, there is an $N^* = \langle N \rangle$, the most probable number of atoms in the system.  This can be expressed as a ratio $\lambda = \frac{N^*}{N^0}$, where $N^0$ is the total number of lattice sites in the simulation box as shown in Fig.~\ref{fig:log-pfc-lambda}, obtained by simulation with small noise $\eta$ and counting the expectation of the number of atoms in the system.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=200pt,
+      height=300pt,
+      xmin=0, xmax=0.40,
+      ymin=-0.4, ymax=0,
+      axis line style={draw=none},  % hide default axis lines
+      xlabel = {\(\mean\phi\)},
+      ylabel = {\(\epsilon\)},
+      ylabel style={font=\Large, yshift=2pt},
+      xtick={0,0.1,0.2,0.3,0.4},
+      ytick={-0.4,-0.3,-0.2,-0.1,0},
+      extra x ticks={0,0.1,0.2,0.3,0.4},
+      extra y ticks={-0.4,-0.3,-0.2,-0.1,0},
+      % show the extra x labels on the top and extra y labels on the right
+      extra x tick style={
+          tick align=outside,
+          xticklabel pos=upper,      % put these labels on the top edge
+          major tick length=3pt
+      },        
+      extra y tick style={
+          tick align=outside,
+          yticklabel pos=right,      % put these labels on the top edge
+          major tick length=3pt
+      },        
+      minor x tick num=9,  % creates minor ticks between majors -> spacing 0.02
+      minor y tick num=9,
+      tick align=outside,
+      every tick/.style={black},
+      every minor tick/.style={black!60},
+      major tick length=3pt,
+      minor tick length=1.5pt,
+      label style={font=\small},
+      tick label style={font=\small},
+      clip=true
+    ]
+
+    % Draw a rectangular box for the plotting region
+    \draw[black] (axis cs:0,0) rectangle (axis cs:0.4,-0.4);
+
+    % place this inside the axis
+    \node[inner sep=0pt, anchor=north west] at (rel axis cs:0,1)
+        {\includegraphics[width=155pt,height=255pt,keepaspectratio=false]{fig/fig-vacancy-lambda.png}};
+  
+    \end{axis}
+  \end{tikzpicture}
+  \caption{A modified phase diagram showing the ratio $\lambda = N^*/N^0$ of occupied sites for a given mean density $\mean\phi$ and $\epsilon$ using the log PFC model.  Model parameters were $\beta = 0.5$ and $g = -1$.}
+  \label{fig:log-pfc-lambda}
+\end{figure}
+
+
+\subsubsection{Grain boundaries}
+
+Grain boundaries in a PFC simulation tend to form when a system is initialized with an average density in the solid-phase regime and minor fluctuations in the density profile, and is then allowed to relax to a pseudo-equilibrium state \cite{elder2007phase-field}.  The resulting ground state is stable under small noise in both standard and log PFC models.  However, the PFC atoms along the grain boundary and dislocations differ between models, as shown in Fig.~\ref{fig:grain-boundary-comparison}, where the equilibrium density field from the standard PFC system was used as the starting density in the log PFC simulation to make direct comparisons possible.  In standard PFC, an atom along a grain boundary can become blurred when there is tension on the atom from its neighbors, while in log PFC, atoms generally remain with clear boundaries and migrate to their lowest energy position.  While both models permit direct calculation of grain boundary energy as a function of the interface angle, for example, the log PFC model is better suited to investigating the structure of defects along the boundary.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-grain-boundary-std.png}
+        \caption*{\text{Standard PFC}}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-grain-boundary-log.png}
+        \caption*{\text{Log PFC}}
+    \end{subfigure}
+    \caption{PFC density field of grain boundaries in standard PFC (left) and log PFC (right).  The standard PFC parameters were $\beta = 0.5, \epsilon = -0.15$, and $g = 0$.  The log PFC parameters were $\beta = 0.5, \epsilon = -2.5$ and $g = -1$.  The fields was initialized randomly for standard PFC with average density $\mean\phi = -0.23$ and run until equilibrium ($t=1\,000$).  A similar grain boundary was achieved in the log PFC model by taking an intermediate state ($t=10$) from the standard PFC and adjusting the density to a $\mean\phi = 0.5$ and then running until equilibrium in the log PFC model ($t=10+100$). }
+    \label{fig:grain-boundary-comparison}
+\end{figure}
+
+
+\subsubsection{Vacancy diffusion}
+
+One of the noted difficulties with the standard PFC model is the inability to measure meaningful vacancy diffusion.  In \cite{elder2002modeling}, Elder et al. give a picture of vacancy diffusion similar to the one in Fig.~\ref{fig:single-vacancy-comparison}, where they note that due to the long time scales in standard PFC, a vacancy diffuses into the background by pulling density from its neighbors, rather than making discrete jumps from site to site.  This view, however, is complicated by two observations.  First, lowering the chemical temperature $\eta$ in Eq.~\ref{eqn:vacancy-pfc-free-energy} increases the diffusion constant $D$ rather than slowing it.  Second, if thermal noise is used as a proxy for temperature, the method of calculating the rate at which the vacancy is diffusing becomes entangled with the impact of the density fluctuations due to noise.  Neither of these complications is necessarily insurmountable, as one could interpret the first as differences between diffusion in disparate materials, while the second could be statistically managed with a large number of systems.
+
+%However, the MD-like nature of log PFC enables a more direct approach to vacancy diffusion.  Following the example of Yao and Olvera de la Cruz in \cite{yao2014LJvacancy}, vacancy diffusion was directly measured using log PFC.  In their study, Yao and Olvera de la Cruz implemented an MD simulation with a Lennard-Jones (LJ) potential and initialized their 2D simulation box with $N=19\,999$ atoms.  They removed one or more atoms to create a vacancy and, with an $N\,P\,T$ ensemble, measured the rate of diffusion for their test system.  They observed the temperature dependence of diffusion on double vacancies (see Fig.~2.a in \cite{yao2014LJvacancy}, with the rate of diffusion increasing with increasing temperature. They also observed that when comparing one-point, two-point, and three-point vacancies, the mobility of the two-point vacancy was highest (see Fig.~2.b in \cite{yao2014LJvacancy}).  Similar results were demonstrated for the log PFC model.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.65\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/fig-vacancy-diffusion-eta.png}
+    \end{subfigure}
+    \caption{Log PFC vacancy diffusion measured as a function of the thermal temperature $\eta$. Ten systems were initialized identically with a perfect solid crystal $q_\text{eff} = 0.97$ and double vacancy in an off-center location.  The systems were run for up to $t=500 000$ or until the system nucleated an atom at a vacancy site.  Mean square displacement was measured from a reference frame unique to each trajectory and determined by the vacancy diffusing by at least one lattice constant ($a$) from its initial position.  The log PFC model parameters used were $\beta = 1, \epsilon = -3.5, g = -0.5, \phi_s = 0.48$, and $\phi_v = 0.17$ (solid and vacancy density respectively).}
+    \label{fig:vacancy-diffusion}
+\end{figure}
+
+However, the MD-like nature of log PFC enables a more direct approach to vacancy diffusion.  Following the example of Yao and Olvera de la Cruz in \cite{yao2014LJvacancy}, vacancy diffusion was directly measured using log PFC.  In their study, Yao and Olvera de la Cruz implemented an MD simulation with a Lennard-Jones (LJ) potential and initialized their 2D simulation box with $N=19\,999$ atoms.  They removed one or more atoms to create a vacancy and, with an $N\,P\,T$ ensemble, measured the rate of diffusion for their test system.  They observed the temperature dependence of diffusion on double vacancies (see Fig.~2.a in \cite{yao2014LJvacancy}, with the rate of diffusion increasing with increasing temperature.  Similar results were demonstrated for the log PFC model and are shown in Fig.~\ref{fig:vacancy-diffusion}.
+
+%\subsection{Binary Systems}
+%
+%\begin{itemize}
+%    \item hBN, SiC
+%    \item Vacancies in binaries
+%    \item Surface tension
+%\end{itemize}
