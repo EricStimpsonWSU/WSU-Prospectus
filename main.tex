@@ -20,6 +20,11 @@
 
 % Control float placement. [section] = "stop floats at section boundaries is to change the definition of “\section” to include “\FloatBarrier”"
 \usepackage[section]{placeins}
+%% Add barriers at subsections too
+%\makeatletter
+%\let\oldsubsection\subsection
+%\renewcommand{\subsection}{\FloatBarrier\oldsubsection}
+%\makeatother
 
 % Hypertext (links) in LaTeX. [option] = remove color and border on links.
 \usepackage[hidelinks]{hyperref}
@@ -55,6 +60,7 @@
 \usepackage{tikz}
 \usepackage{tikzsymbols}
 \usetikzlibrary{positioning,arrows.meta,decorations.pathmorphing,calc}
+\usepackage{overpic}
 
 % Math nice matrices
 \usepackage{nicematrix}
@@ -301,7 +307,12 @@
 
 % Compile Appendix D
 \phantomsection
-\input{appendixD-Odd-Elasticity}
+\input{appendixD-PFC-PhaseDiagram}
+\clearpage
+
+% Compile Appendix E
+\phantomsection
+\input{appendixE-Odd-Elasticity}
 \clearpage
 
 % ...
